@@ -10,9 +10,9 @@ from collections import Counter
 
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 stops = set(stopwords.words('english'))
-file = open("/home/mwilcher/enron.json", "r")
-corpusFile = open("/home/mwilcher/eee/AllWords.txt","w")
-BOW_File = open("/home/mwilcher/eee/bagOfWords.txt","w")
+file = open("/data/datasets/enron.json", "r")
+corpusFile = open("/home/jthalbert/github/topic-modeling-playground/eee/AllWords.txt","w")
+BOW_File = open("/home/jthalbert/github/topic-modeling-playground/eee/bagOfWords.txt","w")
 
 
 punct='`\'\-,()\.;<>:?&%$!^=@{}#*[]'
@@ -23,15 +23,14 @@ corpusTermsAll={}
 
 for line in file:
 	try:
-		docOpen+=1
 		email=json.loads(line)
-		
+		docOpen+=1
 		#print json.dumps(email, indent=4, sort_keys=True)
 		payload=email["payload"]
 		message_id=email['headers']['Message-ID']
 		Subject=email['headers']['Subject']
 		docWords=[]
-		
+
 		#payload to tokens
 		tokens = [word for sent in sent_tokenize(payload) for word in word_tokenize(sent)]
 		docWords= filter(lambda word: word not in punct, tokens)
@@ -45,7 +44,7 @@ for line in file:
 				corpusTermsAll[word]=corpusTermsAll[word] + c[word]
 			else:
 				corpusTermsAll[word]=c[word]
-			
+
 	except ValueError:
 		print 'Decoding JSON has failed'
 		docFailed+=1
@@ -54,5 +53,5 @@ for line in file:
 BOW_File.close()
 for word in corpusTermsAll:
 	corpusFile.write('%s\t%d\n' % (word,corpusTermsAll[word]))
-		
-	
+
+
